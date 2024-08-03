@@ -1,66 +1,73 @@
-function getDOB() {
+// script.js
 
-   
-    let data =
-        document.getElementById("inputDob").value;
+const audio = document.getElementById('audio');
+const playPauseBtn = document.getElementById('play-pause-btn');
+const stopBtn = document.getElementById('stop-btn');
+const progressBar = document.getElementById('progress-bar');
+const trackName = document.getElementById('track-name');
+const trackArtist = document.getElementById('track-artist');
 
-   
-    let dob = new Date(data);
-    let day = dob.getDate();
-    let month = dob.getMonth();
-    let year = dob.getFullYear();
+let isPlaying = false;
 
-    
-    let now =
-        new Date(document.getElementById("cdate").value);
-    console.log(now);
-    let yearDiff = now.getFullYear() - year;
-    let monthDiff = now.getMonth() - month;
-    let dateDiff = now.getDate() - day;
-
-  
-    if (yearDiff < 0) console.log("invalid date");
-    else if (monthDiff > 0) {
-        console.log(yearDiff);
-    } else if (monthDiff === 0 && dateDiff >= 0) {
-        console.log(yearDiff);
+playPauseBtn.addEventListener('click', () => {
+    if (isPlaying) {
+        audio.pause();
+        playPauseBtn.textContent = 'Play';
+        isPlaying = false;
     } else {
-        yearDiff = yearDiff - 1;
-        if (monthDiff <= 0)
-            if (dateDiff > 0) monthDiff = 12 + monthDiff;
-            else monthDiff = 11 - monthDiff;
+        audio.play();
+        playPauseBtn.textContent = 'Pause';
+        isPlaying = true;
     }
-    if (dateDiff < 0) {
-        dateDiff = 30 + dateDiff;
-        monthDiff -= 1;
-    }
+});
 
-    
-    if (yearDiff < 0)
-        document.getElementById("currentAge").innerHTML = "Invalid Date";
-    else
-        document.getElementById("currentAge").innerHTML =
-            "Your current Age is " + yearDiff + " years "
-            + monthDiff + " months " + dateDiff + " days";
-}
+stopBtn.addEventListener('click', () => {
+    audio.pause();
+    audio.currentTime = 0;
+    playPauseBtn.textContent = 'Play';
+    isPlaying = false;
+});
 
+audio.addEventListener('timeupdate', () => {
+    const currentTime = audio.currentTime;
+    const duration = audio.duration;
+    const progress = (currentTime / duration) * 100;
+    progressBar.value = progress;
+});
 
-function currentDate() {
-    console.log(formatted());
-    let d = document.getElementById("cdate");
-    d.value = formatted();
-}
+progressBar.addEventListener('input', () => {
+    const progress = progressBar.value;
+    const duration = audio.duration;
+    const currentTime = (progress / 100) * duration;
+    audio.currentTime = currentTime;
+});
 
-function formatted(date = new Date()) {
-    return [
-        date.getFullYear(),
-        short(date.getMonth() + 1),
-        short(date.getDate()),
-    ].join("-");
-}
-function short(num) {
-    return num.toString().padStart(2, "0");
-}
+// Set track info
+trackName.textContent = 'Track Name';
+trackArtist.textContent = 'Track Artist';
 
+// server.js
 
-currentDate();
+const express = require('express');
+const app = express();
+const port = 3000;
+const db = require('./db'); // Assuming you have a database module
+
+app.use(express.static('public'));
+
+app.get('/play-song/:id', (req, res) => {
+  const songId = req.params.id;
+  db.getSongById(songId)
+    .then(song => {
+      const songUrl = song.url;
+      res.redirect(songUrl);
+    })
+    .catch(err => {
+      console.error(err);
+      res.status(500).send('Error retrieving song');
+    });
+});
+
+app.listen(port, () => {
+  console.log(`Server listening at http://localhost:${port}`);
+});

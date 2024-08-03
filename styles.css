@@ -1,0 +1,56 @@
+/* styles.css */
+
+.music-player {
+    width: 300px;
+    margin: 40px auto;
+    background-color: #f7f7f7;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.player-controls {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.play-pause,.stop {
+    background-color: #4CAF50;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.play-pause:hover,.stop:hover {
+    background-color: #3e8e41;
+}
+
+.track-info {
+    margin-bottom: 20px;
+}
+
+.track-name,.track-artist {
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 10px;
+    background-color: #ccc;
+    border-radius: 10px;
+    padding: 10px;
+}
+
+#progress-bar {
+    width: 100%;
+    height: 10px;
+    background-color: #4CAF50;
+    border-radius: 10px;
+    padding: 10px;
+    cursor: pointer;
+}
